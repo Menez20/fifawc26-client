@@ -6,7 +6,7 @@ import { submitPrediction, getMyPredictions } from "../api/predictions";
 import LockCountdown from "../components/LockCountdown";
 import { isLocked } from "../utils/time";
 
-export default function MatchPage({ user }: { user: any }) {
+export default function MatchPage({}: {}) {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");

@@ -34,7 +34,7 @@ function App() {
       />
       <Route
         path="/matches/:id"
-        element={user ? <MatchPage user={user} /> : <Navigate to="/login" />}
+        element={user ? <MatchPage /> : <Navigate to="/login" />}
       />
       <Route
         path="/groups"

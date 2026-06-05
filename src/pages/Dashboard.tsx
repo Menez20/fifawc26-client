@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { getMatches } from "../api/matches";
 import { getMyRooms, createRoom, joinRoom } from "../api/rooms";
-import { logout } from "../api/auth";
 import TeamCrest from "../components/TeamCrest";
 import GroupsCarousel from "../components/GroupsCarousel";
 
