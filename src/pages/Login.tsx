@@ -100,7 +100,7 @@ export default function Login() {
 
         {/* Google button */}
         <a
-          href="http://localhost:3000/auth/google"
+          href={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/auth/google`}
           className="flex items-center gap-3 font-black transition-all duration-300 hover:scale-105"
           style={{
             background: "rgba(255,255,255,0.95)",
