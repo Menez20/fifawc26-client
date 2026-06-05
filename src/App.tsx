@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import RoomPage from "./pages/RoomPage";
 import MatchPage from "./pages/MatchPage";
 import GroupsPage from "./pages/GroupsPage";
+import AuthCallback from "./pages/AuthCallback";
 
 function App() {
   const { data: user, isLoading } = useQuery({
@@ -40,6 +41,8 @@ function App() {
         path="/groups"
         element={user ? <GroupsPage /> : <Navigate to="/login" />}
       />
+
+      <Route path="/auth/callback" element={<AuthCallback />} />
     </Routes>
   );
 }

@@ -132,7 +132,8 @@ export default function Dashboard({ user }: { user: any }) {
           </div>
           <button
             onClick={() => {
-              window.location.href = `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/auth/logout`;
+              localStorage.removeItem("access_token");
+              window.location.href = "/login";
             }}
             style={{
               display: "flex",
