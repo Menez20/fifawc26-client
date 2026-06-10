@@ -1,9 +1,8 @@
 import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export default function AuthCallback() {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -13,9 +12,10 @@ export default function AuthCallback() {
       if (isNewUser) {
         localStorage.setItem("show_profile_setup", "true");
       }
-      navigate("/");
+      // Force full reload so React Query re-fetches /auth/me with the new token
+      window.location.href = "/";
     } else {
-      navigate("/login");
+      window.location.href = "/login";
     }
   }, []);
 
