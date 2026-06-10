@@ -5,6 +5,7 @@ import { getMatches } from "../api/matches";
 import { getMyRooms, createRoom, joinRoom } from "../api/rooms";
 import TeamCrest from "../components/TeamCrest";
 import GroupsCarousel from "../components/GroupsCarousel";
+import ProfileModal from "../components/ProfileModal";
 
 export default function Dashboard({ user }: { user: any }) {
   const navigate = useNavigate();
@@ -15,10 +16,21 @@ export default function Dashboard({ user }: { user: any }) {
   const [page, setPage] = useState(0);
   const PAGE_SIZE = 7;
 
+  const [isNewUserSetup] = useState(() => {
+    return localStorage.getItem("show_profile_setup") === "true";
+  });
+
+  const [showProfile, setShowProfile] = useState(() => {
+    const shouldShow = localStorage.getItem("show_profile_setup") === "true";
+    if (shouldShow) localStorage.removeItem("show_profile_setup");
+    return shouldShow;
+  });
+
   const { data: matches = [] } = useQuery({
     queryKey: ["matches"],
     queryFn: getMatches,
   });
+
   const { data: rooms = [] } = useQuery({
     queryKey: ["rooms"],
     queryFn: getMyRooms,
@@ -136,18 +148,56 @@ export default function Dashboard({ user }: { user: any }) {
           >
             Rules
           </button>
-          <div className="flex items-center gap-2">
-            {user.avatarUrl && (
+          <button
+            onClick={() => setShowProfile(true)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              background: "rgba(255,255,255,0.04)",
+              border: "0.5px solid rgba(255,255,255,0.08)",
+              borderRadius: "20px",
+              padding: "4px 10px 4px 4px",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.borderColor = "rgba(0,255,135,0.3)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")
+            }
+          >
+            {user.avatarUrl ? (
               <img
                 src={user.avatarUrl}
-                className="w-7 h-7 rounded-full"
-                style={{ border: "1.5px solid rgba(0,255,135,0.3)" }}
+                style={{ width: "24px", height: "24px", borderRadius: "50%" }}
               />
+            ) : (
+              <div
+                style={{
+                  width: "24px",
+                  height: "24px",
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, #00ff87, #0099ff)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "11px",
+                  fontWeight: 900,
+                  color: "#050510",
+                }}
+              >
+                {user.displayName?.[0]?.toUpperCase()}
+              </div>
             )}
             <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>
               {user.displayName}
             </span>
-          </div>
+            <span style={{ fontSize: "9px", color: "rgba(255,255,255,0.2)" }}>
+              ✎
+            </span>
+          </button>
           <button
             onClick={() => {
               localStorage.removeItem("access_token");
@@ -644,6 +694,13 @@ export default function Dashboard({ user }: { user: any }) {
           <GroupsCarousel />
         </div>
       </div>
+      {showProfile && (
+        <ProfileModal
+          user={user}
+          onClose={() => setShowProfile(false)}
+          isNewUser={isNewUserSetup}
+        />
+      )}
     </div>
   );
 }

@@ -7,8 +7,12 @@ export default function AuthCallback() {
 
   useEffect(() => {
     const token = searchParams.get("token");
+    const isNewUser = searchParams.get("newUser") === "true";
     if (token) {
       localStorage.setItem("access_token", token);
+      if (isNewUser) {
+        localStorage.setItem("show_profile_setup", "true");
+      }
       navigate("/");
     } else {
       navigate("/login");
