@@ -140,6 +140,7 @@ export default function Dashboard({ user }: { user: any }) {
               border: "0.5px solid rgba(255,255,255,0.1)",
               borderRadius: "20px",
               padding: "5px 14px",
+              cursor: "pointer",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#f59e0b")}
             onMouseLeave={(e) =>
