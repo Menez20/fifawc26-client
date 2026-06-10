@@ -6,7 +6,51 @@ import { submitPrediction, getMyPredictions } from "../api/predictions";
 import LockCountdown from "../components/LockCountdown";
 import { isLocked } from "../utils/time";
 
-export default function MatchPage({}: {}) {
+function Toast({
+  message,
+  type,
+}: {
+  message: string;
+  type: "success" | "error";
+}) {
+  return (
+    <div
+      style={{
+        position: "fixed",
+        bottom: "32px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 100,
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        background:
+          type === "success" ? "rgba(0,255,135,0.12)" : "rgba(239,68,68,0.12)",
+        border: `0.5px solid ${type === "success" ? "rgba(0,255,135,0.3)" : "rgba(239,68,68,0.3)"}`,
+        borderRadius: "30px",
+        padding: "12px 24px",
+        backdropFilter: "blur(12px)",
+        boxShadow: `0 0 40px ${type === "success" ? "rgba(0,255,135,0.1)" : "rgba(239,68,68,0.1)"}`,
+        animation: "slideUp 0.3s ease",
+      }}
+    >
+      <span style={{ fontSize: "16px" }}>
+        {type === "success" ? "✅" : "❌"}
+      </span>
+      <span
+        style={{
+          fontSize: "13px",
+          fontWeight: 700,
+          color: type === "success" ? "#00ff87" : "#ef4444",
+        }}
+      >
+        {message}
+      </span>
+    </div>
+  );
+}
+
+export default function MatchPage() {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");
@@ -15,6 +59,18 @@ export default function MatchPage({}: {}) {
 
   const [home, setHome] = useState(0);
   const [away, setAway] = useState(0);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
+
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success",
+  ) => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const { data: match } = useQuery({
     queryKey: ["match", id],
@@ -46,7 +102,10 @@ export default function MatchPage({}: {}) {
       }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["predictions"] });
-      navigate(`/rooms/${roomId}`);
+      showToast(existing ? "✓ Prediction updated!" : "✓ Prediction saved!");
+    },
+    onError: () => {
+      showToast("Failed to save prediction", "error");
     },
   });
 
@@ -69,7 +128,6 @@ export default function MatchPage({}: {}) {
       </div>
     );
 
-  // Team color bleeds based on crest — we use green shades as fallback
   const locked = isLocked(match.kickoffAt);
 
   return (
@@ -77,7 +135,21 @@ export default function MatchPage({}: {}) {
       className="min-h-screen relative overflow-hidden"
       style={{ background: "#06060f", color: "#fff" }}
     >
-      {/* Atmospheric team color bleeds */}
+      {/* Toast */}
+      {toast && <Toast message={toast.message} type={toast.type} />}
+
+      {/* Slide up animation */}
+      <style>{`
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+          to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+
+      {/* Atmospheric background */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -141,7 +213,6 @@ export default function MatchPage({}: {}) {
       <div className="relative z-10 flex flex-col items-center justify-center px-6 py-12 gap-10 min-h-[calc(100vh-64px)]">
         {/* Teams */}
         <div className="flex items-center gap-8 w-full max-w-lg">
-          {/* Home team */}
           <div className="flex flex-col items-center gap-4 flex-1">
             <div
               style={{
@@ -183,7 +254,6 @@ export default function MatchPage({}: {}) {
             </span>
           </div>
 
-          {/* Center */}
           <div className="flex flex-col items-center gap-2">
             <div
               style={{
@@ -198,7 +268,6 @@ export default function MatchPage({}: {}) {
                 style={{
                   fontSize: "32px",
                   fontWeight: 900,
-                  fontVariantNumeric: "tabular-nums",
                   textShadow: "0 0 30px rgba(0,255,135,0.3)",
                 }}
               >
@@ -237,7 +306,6 @@ export default function MatchPage({}: {}) {
             />
           </div>
 
-          {/* Away team */}
           <div className="flex flex-col items-center gap-4 flex-1">
             <div
               style={{
@@ -421,7 +489,6 @@ export default function MatchPage({}: {}) {
 
                 <LockCountdown kickoffAt={match.kickoffAt} />
 
-                {/* Score inputs */}
                 <div className="flex items-center gap-8">
                   <div className="flex flex-col items-center gap-3">
                     <span
