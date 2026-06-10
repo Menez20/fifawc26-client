@@ -110,6 +110,7 @@ export default function Dashboard({ user }: { user: any }) {
               border: "0.5px solid rgba(255,255,255,0.1)",
               borderRadius: "20px",
               padding: "5px 14px",
+              cursor: "pointer",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#00ff87")}
             onMouseLeave={(e) =>
@@ -117,6 +118,23 @@ export default function Dashboard({ user }: { user: any }) {
             }
           >
             Groups
+          </button>
+          <button
+            onClick={() => navigate("/rules")}
+            style={{
+              fontSize: "12px",
+              color: "rgba(255,255,255,0.4)",
+              background: "rgba(255,255,255,0.05)",
+              border: "0.5px solid rgba(255,255,255,0.1)",
+              borderRadius: "20px",
+              padding: "5px 14px",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#f59e0b")}
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = "rgba(255,255,255,0.4)")
+            }
+          >
+            Rules
           </button>
           <div className="flex items-center gap-2">
             {user.avatarUrl && (

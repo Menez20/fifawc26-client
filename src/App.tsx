@@ -7,6 +7,7 @@ import RoomPage from "./pages/RoomPage";
 import MatchPage from "./pages/MatchPage";
 import GroupsPage from "./pages/GroupsPage";
 import AuthCallback from "./pages/AuthCallback";
+import RulesPage from "./pages/RulesPage";
 
 function App() {
   const { data: user, isLoading } = useQuery({
@@ -43,6 +44,11 @@ function App() {
       />
 
       <Route path="/auth/callback" element={<AuthCallback />} />
+
+      <Route
+        path="/rules"
+        element={user ? <RulesPage /> : <Navigate to="/login" />}
+      />
     </Routes>
   );
 }
